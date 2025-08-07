@@ -1,58 +1,67 @@
-# DEFCON 33 Security Research Project
+# DEF CON 33 - Conference Tooling Infrastructure
 
-A comprehensive collection of security research materials, tools, and resources for DEFCON 33.
+[![DEF CON 33](https://img.shields.io/badge/DEF%20CON-33-black?style=for-the-badge&logo=def-con)](https://defcon.org)
+[![Guile Scheme](https://img.shields.io/badge/Guile-Scheme-blue?style=for-the-badge&logo=gnu)](https://www.gnu.org/software/guile/)
+[![Conference Tools](https://img.shields.io/badge/Conference-Tools-green?style=for-the-badge)](https://github.com/dsp-dr/defcon33)
+[![Infrastructure](https://img.shields.io/badge/Tooling-Infrastructure-purple?style=for-the-badge)](https://github.com/dsp-dr/defcon33)
 
-## Project Structure
+> Automated conference management and attendee tools powered by Guile Scheme
+
+## Overview
+
+This repository contains the tooling infrastructure for DEF CON 33, providing automation utilities for:
+
+- Conference schedule management
+- Attendee registration and tracking
+- Presentation and workshop coordination
+- Event automation and notifications
+- Badge system integration
+- CTF infrastructure support
+
+## Features
+
+- **Scheme-Powered Automation**: Built on GNU Guile for powerful, extensible scripting
+- **Modular Architecture**: Composable tools that work independently or together
+- **Conference-Ready**: Battle-tested tools for managing large-scale technical conferences
+- **Security-First**: Designed with DEF CON's security requirements in mind
+
+## Quick Start
+
+```bash
+# Install dependencies
+gmake deps
+
+# Show available commands
+gmake help
+
+# Run tests
+gmake test
+
+# Start development environment
+gmake dev
+```
+
+## Architecture
 
 ```
 defcon33/
-├── ai-village/          # AI/ML security research and challenges
-├── blue-team/           # Defensive security tools and techniques
-├── capture-the-flag/    # CTF challenges, writeups, and solutions
-├── demos/               # Security demonstrations and proof-of-concepts
-├── docs/                # Documentation and research papers
-├── presentations/       # Slides and presentation materials
-├── red-team/           # Offensive security tools and techniques
-├── tools/              # Custom security tools and scripts
-└── workshops/          # Workshop materials and exercises
+├── bin/              # Executable scripts
+├── lib/              # Guile Scheme libraries
+├── modules/          # Conference modules
+│   ├── schedule/     # Schedule management
+│   ├── attendee/     # Attendee systems
+│   ├── badge/        # Badge generation
+│   └── ctf/          # CTF infrastructure
+├── tests/            # Test suites
+└── docs/             # Documentation
 ```
 
-## Usage
+## Requirements
 
-This project is organized into specialized tracks that align with DEFCON's various villages and activities:
-
-- **AI Village**: Research on AI/ML security, adversaport_number
-- **Blue Team**: Defensive cybersecurity practices and incident response
-- **Capture The Flag**: Competition challenges and educational puzzles
-- **Red Team**: Ethical hacking and penetration testing methodologies
-- **Tools**: Custom utilities and automation scripts
-- **Workshops**: Hands-on learning materials
-
-## Media Mirror
-
-To create a local mirror of DEFCON 33 media content, you can use the provided Makefile target:
-
-```bash
-make mirror-media
-```
-
-This will create a git-ignored local copy of presentations, videos, and other media files from the official DEFCON 33 media server.
-
-## Security Notice
-
-⚠️ **IMPORTANT**: This repository contains security research materials intended for educational and defensive purposes only. All tools and techniques should be used responsibly and in accordance with applicable laws and organizational policies.
-
-## Contributing
-
-1. Follow ethical disclosure practices
-2. Ensure all contributions are educational in nature
-3. Test tools in isolated environments only
-4. Document all research thoroughly
+- GNU Guile 3.0+
+- GNU Make
+- Git
 
 ## License
 
-This project is licensed under the MIT License with additional security research disclaimers. See the [LICENSE](LICENSE) file for details.
-
-## Disclaimer
-
-The materials in this repository are provided for educational and research purposes only. Users are responsible for ensuring their use complies with all applicable laws and regulations.
+Private repository - Internal use only

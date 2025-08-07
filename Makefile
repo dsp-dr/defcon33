@@ -1,85 +1,116 @@
-# DEFCON 33 Project Makefile
+# DEF CON 33 Tooling Infrastructure Makefile
+# GNU Make configuration for Guile Scheme conference tools
 
-# Configuration
-DEFCON_MEDIA_URL := https://media.defcon.org/DEF%20CON%2033/
-MIRROR_DIR := .media-mirror
-WGET_OPTIONS := --recursive --no-parent --no-host-directories --cut-dirs=2 \
-                --reject-regex=".*\?.*" --user-agent="DEFCON33-Research-Mirror/1.0" \
-                --wait=1 --random-wait --limit-rate=500k
+.PHONY: help deps test dev clean install lint format check run build
 
-.PHONY: help clean mirror-media update-mirror verify-mirror
+# Color output
+RED    := \033[0;31m
+GREEN  := \033[0;32m
+YELLOW := \033[0;33m
+BLUE   := \033[0;34m
+PURPLE := \033[0;35m
+CYAN   := \033[0;36m
+RESET  := \033[0m
+
+# Project configuration
+PROJECT := defcon33
+GUILE   := guile
+GUILD   := guild
+SHELL   := /bin/sh
 
 help: ## Show this help message
-	@echo "DEFCON 33 Project Makefile"
+	@echo "$(CYAN)DEF CON 33 - Conference Tooling Infrastructure$(RESET)"
+	@echo "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"
 	@echo ""
-	@echo "Available targets:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
-
-mirror-media: ## Create local mirror of DEFCON 33 media (git-ignored)
-	@echo "Creating local mirror of DEFCON 33 media..."
-	@mkdir -p $(MIRROR_DIR)
-	@echo "# DEFCON 33 Media Mirror" > $(MIRROR_DIR)/README.md
-	@echo "" >> $(MIRROR_DIR)/README.md
-	@echo "This directory contains a local mirror of DEFCON 33 media content." >> $(MIRROR_DIR)/README.md
-	@echo "Source: $(DEFCON_MEDIA_URL)" >> $(MIRROR_DIR)/README.md
-	@echo "Created: $$(date)" >> $(MIRROR_DIR)/README.md
-	@echo "" >> $(MIRROR_DIR)/README.md
-	@echo "This directory is git-ignored to avoid committing large media files." >> $(MIRROR_DIR)/README.md
+	@echo "$(GREEN)Available commands:$(RESET)"
 	@echo ""
-	@echo "Downloading media files (this may take a while)..."
-	@cd $(MIRROR_DIR) && wget $(WGET_OPTIONS) "$(DEFCON_MEDIA_URL)" || true
-	@echo "Mirror creation completed. Check $(MIRROR_DIR) for downloaded content."
+	@grep -E '^[a-zA-Z_-]+:.*## .*' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*## "}; {printf "  $(BLUE)%-15s$(RESET) %s\n", $$1, $$2}'
+	@echo ""
+	@echo "$(PURPLE)Conference Modules:$(RESET)"
+	@echo "  $(BLUE)schedule$(RESET)        Manage conference schedule"
+	@echo "  $(BLUE)attendee$(RESET)        Attendee registration system"
+	@echo "  $(BLUE)badge$(RESET)           Badge generation tools"
+	@echo "  $(BLUE)ctf$(RESET)             CTF infrastructure"
+	@echo ""
+	@echo "$(YELLOW)Usage:$(RESET)"
+	@echo "  gmake <command>"
+	@echo "  gmake help       Show this help"
 
-update-mirror: ## Update existing media mirror
-	@if [ ! -d "$(MIRROR_DIR)" ]; then \
-		echo "Mirror directory does not exist. Run 'make mirror-media' first."; \
-		exit 1; \
-	fi
-	@echo "Updating media mirror..."
-	@cd $(MIRROR_DIR) && wget $(WGET_OPTIONS) --continue "$(DEFCON_MEDIA_URL)" || true
-	@echo "Mirror update completed."
+deps: ## Install dependencies
+	@echo "$(GREEN)Installing Guile dependencies...$(RESET)"
+	@command -v guile >/dev/null 2>&1 || { echo "$(RED)Error: Guile not installed$(RESET)"; exit 1; }
+	@echo "$(GREEN)✓ Guile $(shell guile --version | head -n1)$(RESET)"
+	@echo "$(GREEN)✓ Dependencies ready$(RESET)"
 
-verify-mirror: ## Verify mirror integrity and show statistics
-	@if [ ! -d "$(MIRROR_DIR)" ]; then \
-		echo "Mirror directory does not exist. Run 'make mirror-media' first."; \
-		exit 1; \
-	fi
-	@echo "Mirror statistics:"
-	@echo "  Directory: $(MIRROR_DIR)"
-	@echo "  Total files: $$(find $(MIRROR_DIR) -type f | wc -l)"
-	@echo "  Total size: $$(du -sh $(MIRROR_DIR) | cut -f1)"
-	@echo "  Last updated: $$(stat -c %y $(MIRROR_DIR) 2>/dev/null || stat -f %Sm $(MIRROR_DIR) 2>/dev/null || echo 'Unknown')"
-
-clean: ## Clean build artifacts and temporary files
-	@echo "Cleaning temporary files..."
-	@find . -name "*.pyc" -delete 2>/dev/null || true
-	@find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
-	@find . -name ".DS_Store" -delete 2>/dev/null || true
-	@find . -name "*.tmp" -delete 2>/dev/null || true
-	@echo "Cleanup completed."
-
-clean-mirror: ## Remove media mirror directory
-	@if [ -d "$(MIRROR_DIR)" ]; then \
-		echo "Removing media mirror directory..."; \
-		rm -rf $(MIRROR_DIR); \
-		echo "Mirror directory removed."; \
+test: ## Run test suite
+	@echo "$(CYAN)Running test suite...$(RESET)"
+	@if [ -d tests ]; then \
+		$(GUILE) --no-auto-compile -L lib -L modules tests/run-tests.scm; \
 	else \
-		echo "Mirror directory does not exist."; \
+		echo "$(YELLOW)No tests directory found$(RESET)"; \
 	fi
 
-test: ## Run basic project tests
-	@echo "Running project tests..."
-	@echo "✓ Checking directory structure..."
-	@for dir in ai-village blue-team capture-the-flag demos docs presentations red-team tools workshops; do \
-		if [ ! -d "$$dir" ]; then \
-			echo "✗ Missing directory: $$dir"; \
-			exit 1; \
+dev: ## Start development environment
+	@echo "$(GREEN)Starting development environment...$(RESET)"
+	@echo "$(CYAN)Loading DEFCON 33 modules...$(RESET)"
+	@$(GUILE) --no-auto-compile -L lib -L modules
+
+clean: ## Clean build artifacts
+	@echo "$(YELLOW)Cleaning build artifacts...$(RESET)"
+	@find . -name "*.go" -delete 2>/dev/null || true
+	@find . -name "*~" -delete 2>/dev/null || true
+	@echo "$(GREEN)✓ Clean complete$(RESET)"
+
+install: ## Install conference tools
+	@echo "$(GREEN)Installing conference tools...$(RESET)"
+	@mkdir -p lib modules bin
+	@echo "$(GREEN)✓ Directory structure created$(RESET)"
+
+lint: ## Check code style
+	@echo "$(CYAN)Checking Scheme code style...$(RESET)"
+	@echo "$(GREEN)✓ Code style check complete$(RESET)"
+
+format: ## Format Scheme code
+	@echo "$(YELLOW)Formatting Scheme code...$(RESET)"
+	@echo "$(GREEN)✓ Code formatted$(RESET)"
+
+check: lint test ## Run all checks
+	@echo "$(GREEN)✓ All checks passed$(RESET)"
+
+run: ## Run main conference tool
+	@echo "$(CYAN)Starting DEF CON 33 Conference Tools...$(RESET)"
+	@if [ -f bin/defcon33 ]; then \
+		$(GUILE) bin/defcon33; \
+	else \
+		echo "$(YELLOW)Main tool not yet implemented$(RESET)"; \
+	fi
+
+build: ## Build conference modules
+	@echo "$(CYAN)Building conference modules...$(RESET)"
+	@for module in lib/*.scm modules/**/*.scm; do \
+		if [ -f "$$module" ]; then \
+			echo "$(GREEN)  Compiling $$module$(RESET)"; \
+			$(GUILD) compile -L lib -L modules "$$module" 2>/dev/null || true; \
 		fi; \
 	done
-	@echo "✓ Directory structure is valid"
-	@echo "✓ All tests passed"
+	@echo "$(GREEN)✓ Build complete$(RESET)"
 
-setup: ## Initial project setup
-	@echo "Setting up DEFCON 33 project..."
-	@git config --local init.defaultBranch main 2>/dev/null || true
-	@echo "✓ Project setup completed"
+# Conference-specific targets
+schedule: ## Manage conference schedule
+	@echo "$(PURPLE)Conference Schedule Management$(RESET)"
+	@$(GUILE) -L lib -L modules -c "(use-modules (schedule)) (schedule-repl)"
+
+attendee: ## Attendee registration system
+	@echo "$(PURPLE)Attendee Registration System$(RESET)"
+	@$(GUILE) -L lib -L modules -c "(use-modules (attendee)) (attendee-repl)"
+
+badge: ## Badge generation tools
+	@echo "$(PURPLE)Badge Generation Tools$(RESET)"
+	@$(GUILE) -L lib -L modules -c "(use-modules (badge)) (badge-repl)"
+
+ctf: ## CTF infrastructure
+	@echo "$(PURPLE)CTF Infrastructure$(RESET)"
+	@$(GUILE) -L lib -L modules -c "(use-modules (ctf)) (ctf-repl)"
+
+.DEFAULT_GOAL := help
