@@ -20,43 +20,42 @@ This repository explores DEF CON 33 through Guile Scheme, documenting:
 
 ![DEF CON 33 Logo](defcon-logo.png)
 
-## Features
-
-- **Scheme-Powered Automation**: Built on GNU Guile for powerful, extensible scripting
-- **Modular Architecture**: Composable tools that work independently or together
-- **Conference-Ready**: Battle-tested tools for managing large-scale technical conferences
-- **Security-First**: Designed with DEF CON's security requirements in mind
-
 ## Quick Start
 
 ```bash
-# Install dependencies
-gmake deps
+# Download presentations from DEF CON media server
+gmake mirror
 
-# Show available commands
+# List AI/LLM related talks
+gmake ai-talks
+
+# Analyze presentation topics
+gmake analyze
+
+# View/edit analysis notes
+gmake notes
+
+# Show all available commands
 gmake help
-
-# Run tests
-gmake test
-
-# Start development environment
-gmake dev
 ```
 
-## Architecture
+## Project Structure
 
 ```
 defcon33/
-├── bin/              # Executable scripts
-├── lib/              # Guile Scheme libraries
-├── modules/          # Conference modules
-│   ├── schedule/     # Schedule management
-│   ├── attendee/     # Attendee systems
-│   ├── badge/        # Badge generation
-│   └── ctf/          # CTF infrastructure
-├── tests/            # Test suites
-└── docs/             # Documentation
+├── .mirror/          # Downloaded presentations (gitignored)
+├── modules/          # Guile Scheme analysis modules
+├── bin/              # Utility scripts
+├── ANALYSIS.md       # Conference analysis notes
+└── defcon-logo.png   # DEF CON 33 logo
 ```
+
+## Analysis Focus
+
+- **AI/LLM Security**: Tracking presentations on AI exploitation, LLM vulnerabilities
+- **Functional Programming**: Analyzing security concepts through Scheme/Lisp perspective
+- **Hacker Culture**: Documenting community insights and technical innovations
+- **Emerging Threats**: Identifying new attack vectors and defense strategies
 
 ## Requirements
 

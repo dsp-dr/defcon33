@@ -19,7 +19,7 @@ GUILD   := guild
 SHELL   := /bin/sh
 
 help: ## Show this help message
-	@echo "$(CYAN)DEF CON 33 - Conference Tooling Infrastructure$(RESET)"
+	@echo "$(CYAN)DEF CON 33 - Presentation Analysis & Notes$(RESET)"
 	@echo "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"
 	@echo ""
 	@echo "$(GREEN)Available commands:$(RESET)"
@@ -27,11 +27,10 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*## .*' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*## "}; {printf "  $(BLUE)%-15s$(RESET) %s\n", $$1, $$2}'
 	@echo ""
-	@echo "$(PURPLE)Conference Modules:$(RESET)"
-	@echo "  $(BLUE)schedule$(RESET)        Manage conference schedule"
-	@echo "  $(BLUE)attendee$(RESET)        Attendee registration system"
-	@echo "  $(BLUE)badge$(RESET)           Badge generation tools"
-	@echo "  $(BLUE)ctf$(RESET)             CTF infrastructure"
+	@echo "$(PURPLE)Analysis Tools:$(RESET)"
+	@echo "  $(BLUE)ai-talks$(RESET)        List AI/LLM related presentations"
+	@echo "  $(BLUE)analyze$(RESET)         Analyze presentations for topics"
+	@echo "  $(BLUE)notes$(RESET)           View analysis notes"
 	@echo ""
 	@echo "$(YELLOW)Usage:$(RESET)"
 	@echo "  gmake <command>"
@@ -43,18 +42,26 @@ deps: ## Install dependencies
 	@echo "$(GREEN)✓ Guile $(shell guile --version | head -n1)$(RESET)"
 	@echo "$(GREEN)✓ Dependencies ready$(RESET)"
 
-test: ## Run test suite
-	@echo "$(CYAN)Running test suite...$(RESET)"
-	@if [ -d tests ]; then \
-		$(GUILE) --no-auto-compile -L lib -L modules tests/run-tests.scm; \
-	else \
-		echo "$(YELLOW)No tests directory found$(RESET)"; \
-	fi
+ai-talks: ## List AI/LLM related presentations
+	@echo "$(CYAN)AI/LLM Related Presentations:$(RESET)"
+	@echo "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"
+	@ls .mirror/ 2>/dev/null | grep -iE "ai|llm|gpt|machine|learn|neural|model" || echo "Run 'gmake mirror' first"
 
-dev: ## Start development environment
-	@echo "$(GREEN)Starting development environment...$(RESET)"
-	@echo "$(CYAN)Loading DEFCON 33 modules...$(RESET)"
-	@$(GUILE) --no-auto-compile -L lib -L modules
+analyze: ## Analyze presentation topics
+	@echo "$(PURPLE)Analyzing DEF CON 33 Presentations...$(RESET)"
+	@echo "Total presentations: $$(ls .mirror/*.pdf 2>/dev/null | wc -l)"
+	@echo "AI/ML talks: $$(ls .mirror/*.pdf 2>/dev/null | grep -iE 'ai|llm|gpt|machine|learn|neural|model' | wc -l)"
+	@echo "Crypto talks: $$(ls .mirror/*.pdf 2>/dev/null | grep -iE 'crypto|cipher|encryption' | wc -l)"
+	@echo "Network talks: $$(ls .mirror/*.pdf 2>/dev/null | grep -iE 'network|tcp|udp|protocol' | wc -l)"
+
+notes: ## View/edit analysis notes
+	@echo "$(CYAN)DEF CON 33 Analysis Notes$(RESET)"
+	@if [ -f ANALYSIS.md ]; then \
+		cat ANALYSIS.md; \
+	else \
+		echo "$(YELLOW)No analysis notes yet. Creating...$(RESET)"; \
+		echo "# DEF CON 33 Analysis Notes\n\n## AI/LLM Presentations\n\n## Key Insights\n" > ANALYSIS.md; \
+	fi
 
 clean: ## Clean build artifacts
 	@echo "$(YELLOW)Cleaning build artifacts...$(RESET)"
@@ -62,56 +69,10 @@ clean: ## Clean build artifacts
 	@find . -name "*~" -delete 2>/dev/null || true
 	@echo "$(GREEN)✓ Clean complete$(RESET)"
 
-install: ## Install conference tools
-	@echo "$(GREEN)Installing conference tools...$(RESET)"
-	@mkdir -p lib modules bin
-	@echo "$(GREEN)✓ Directory structure created$(RESET)"
-
-lint: ## Check code style
-	@echo "$(CYAN)Checking Scheme code style...$(RESET)"
-	@echo "$(GREEN)✓ Code style check complete$(RESET)"
-
-format: ## Format Scheme code
-	@echo "$(YELLOW)Formatting Scheme code...$(RESET)"
-	@echo "$(GREEN)✓ Code formatted$(RESET)"
-
-check: lint test ## Run all checks
-	@echo "$(GREEN)✓ All checks passed$(RESET)"
-
-run: ## Run main conference tool
-	@echo "$(CYAN)Starting DEF CON 33 Conference Tools...$(RESET)"
-	@if [ -f bin/defcon33 ]; then \
-		$(GUILE) bin/defcon33; \
-	else \
-		echo "$(YELLOW)Main tool not yet implemented$(RESET)"; \
-	fi
-
-build: ## Build conference modules
-	@echo "$(CYAN)Building conference modules...$(RESET)"
-	@for module in lib/*.scm modules/**/*.scm; do \
-		if [ -f "$$module" ]; then \
-			echo "$(GREEN)  Compiling $$module$(RESET)"; \
-			$(GUILD) compile -L lib -L modules "$$module" 2>/dev/null || true; \
-		fi; \
-	done
-	@echo "$(GREEN)✓ Build complete$(RESET)"
-
-# Conference-specific targets
-schedule: ## Manage conference schedule
-	@echo "$(PURPLE)Conference Schedule Management$(RESET)"
-	@$(GUILE) -L lib -L modules -c "(use-modules (schedule)) (schedule-repl)"
-
-attendee: ## Attendee registration system
-	@echo "$(PURPLE)Attendee Registration System$(RESET)"
-	@$(GUILE) -L lib -L modules -c "(use-modules (attendee)) (attendee-repl)"
-
-badge: ## Badge generation tools
-	@echo "$(PURPLE)Badge Generation Tools$(RESET)"
-	@$(GUILE) -L lib -L modules -c "(use-modules (badge)) (badge-repl)"
-
-ctf: ## CTF infrastructure
-	@echo "$(PURPLE)CTF Infrastructure$(RESET)"
-	@$(GUILE) -L lib -L modules -c "(use-modules (ctf)) (ctf-repl)"
+list: ## List all downloaded presentations
+	@echo "$(CYAN)Downloaded Presentations:$(RESET)"
+	@echo "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"
+	@ls -1 .mirror/*.pdf 2>/dev/null | sed 's|.mirror/||' | sed 's/.pdf//' || echo "No presentations yet. Run 'gmake mirror'"
 
 mirror: ## Mirror DEF CON 33 presentations only
 	@echo "$(CYAN)Mirroring DEF CON 33 Presentations...$(RESET)"
