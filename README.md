@@ -1,3 +1,5 @@
+![DEF CON 33 Logo](defcon-logo.png)
+
 # DEF CON 33 - Conference Notes and Exploration
 
 [![DEF CON 33](https://img.shields.io/badge/DEF%20CON-33-black?style=for-the-badge&logo=def-con)](https://defcon.org)

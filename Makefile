@@ -128,4 +128,15 @@ sessions: ## Show tomorrow's core sessions
 	@echo "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"
 	@$(GUILE) -L modules -c "(use-modules (sessions core)) (for-each display-session (core-sessions))"
 
+# Non-phony target for logo
+defcon-logo.png:
+	@echo "$(CYAN)Downloading DEF CON 33 logo...$(RESET)"
+	@wget -q -O defcon-logo.webp "https://media.defcon.org/DEF%20CON%2033/DEF%20CON%2033%20logo-1.webp"
+	@echo "$(YELLOW)Converting to PNG...$(RESET)"
+	@convert defcon-logo.webp defcon-logo.png
+	@rm defcon-logo.webp
+	@echo "$(GREEN)✓ Logo saved as defcon-logo.png$(RESET)"
+
+defcon-logo: defcon-logo.png ## Download and convert DEF CON 33 logo
+
 .DEFAULT_GOAL := help
