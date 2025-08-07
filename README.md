@@ -1,5 +1,3 @@
-![DEF CON 33 Logo](defcon-logo.png)
-
 # DEF CON 33 - Conference Notes and Exploration
 
 [![DEF CON 33](https://img.shields.io/badge/DEF%20CON-33-black?style=for-the-badge&logo=def-con)](https://defcon.org)
@@ -19,6 +17,8 @@ This repository explores DEF CON 33 through Guile Scheme, documenting:
 - Technical demonstrations in functional programming
 - Village activities and workshop notes
 - Security research methodologies
+
+![DEF CON 33 Logo](defcon-logo.png)
 
 ## Features
 
