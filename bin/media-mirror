@@ -1,0 +1,77 @@
+#!/usr/bin/env guile
+!#
+
+;;; DEF CON 33 - Media Server Mirror Script
+;;; Downloads and mirrors conference media for offline viewing
+
+(use-modules (ice-9 format)
+             (ice-9 popen)
+             (ice-9 rdelim)
+             (web client)
+             (web uri)
+             (srfi srfi-1))
+
+(define *media-base-url* "https://media.defcon.org/DEF%20CON%2033/")
+(define *local-media-dir* (string-append (getenv "HOME") "/defcon33-media/"))
+
+;;; Media categories to mirror
+(define *media-categories*
+  '(("tracks/main" . "Main Track Presentations")
+    ("tracks/skytalks" . "SkyTalks (if available)")
+    ("villages/lockpick" . "Lockpicking Village")
+    ("villages/car-hacking" . "Car Hacking Village")
+    ("villages/crypto" . "Crypto & Privacy Village")
+    ("villages/hardware" . "Hardware Hacking Village")
+    ("workshops" . "Workshops and Demos")))
+
+;;; Create local directory structure
+(define (ensure-directory path)
+  (unless (file-exists? path)
+    (system* "mkdir" "-p" path)
+    (format #t "Created directory: ~a~%" path)))
+
+;;; Download file using wget
+(define (download-file url local-path)
+  (format #t "Downloading: ~a~%" url)
+  (let ((result (system* "wget" "-c" "-P" local-path url)))
+    (if (zero? result)
+        (format #t "✓ Downloaded successfully~%")
+        (format #t "✗ Download failed~%"))))
+
+;;; Mirror a specific category
+(define (mirror-category category description)
+  (format #t "~%Mirroring: ~a~%" description)
+  (format #t "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━~%")
+  (let ((local-dir (string-append *local-media-dir* category)))
+    (ensure-directory local-dir)
+    ;; Note: In production, would parse media.defcon.org directory listing
+    ;; For now, using placeholder URLs
+    (format #t "Directory prepared: ~a~%" local-dir)))
+
+;;; Main mirroring function
+(define (mirror-media-server)
+  (format #t "DEF CON 33 Media Server Mirror~%")
+  (format #t "════════════════════════════════════════~%")
+  (ensure-directory *local-media-dir*)
+  
+  (for-each 
+    (lambda (cat)
+      (mirror-category (car cat) (cdr cat)))
+    *media-categories*)
+  
+  (format #t "~%Mirror setup complete!~%")
+  (format #t "Local media directory: ~a~%" *local-media-dir*))
+
+;;; Check wget availability
+(define (check-dependencies)
+  (unless (zero? (system* "which" "wget"))
+    (format #t "Error: wget is required for media mirroring~%")
+    (format #t "Install with: pkg install wget~%")
+    (exit 1)))
+
+;;; Main entry point
+(define (main args)
+  (check-dependencies)
+  (mirror-media-server))
+
+(main (command-line))

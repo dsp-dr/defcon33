@@ -1,22 +1,22 @@
-# DEF CON 33 - Conference Tooling Infrastructure
+# DEF CON 33 - Conference Notes and Exploration
 
 [![DEF CON 33](https://img.shields.io/badge/DEF%20CON-33-black?style=for-the-badge&logo=def-con)](https://defcon.org)
 [![Guile Scheme](https://img.shields.io/badge/Guile-Scheme-blue?style=for-the-badge&logo=gnu)](https://www.gnu.org/software/guile/)
-[![Conference Tools](https://img.shields.io/badge/Conference-Tools-green?style=for-the-badge)](https://github.com/dsp-dr/defcon33)
-[![Infrastructure](https://img.shields.io/badge/Tooling-Infrastructure-purple?style=for-the-badge)](https://github.com/dsp-dr/defcon33)
+[![Conference Notes](https://img.shields.io/badge/Conference-Notes-green?style=for-the-badge)](https://github.com/dsp-dr/defcon33)
+[![Hacker Culture](https://img.shields.io/badge/Hacker-Culture-purple?style=for-the-badge)](https://github.com/dsp-dr/defcon33)
 
-> Automated conference management and attendee tools powered by Guile Scheme
+> Analyzing DEF CON presentations through the lens of Guile Scheme - conference notes, session tools, and hacker culture exploration
 
 ## Overview
 
-This repository contains the tooling infrastructure for DEF CON 33, providing automation utilities for:
+This repository explores DEF CON 33 through Guile Scheme, documenting:
 
-- Conference schedule management
-- Attendee registration and tracking
-- Presentation and workshop coordination
-- Event automation and notifications
-- Badge system integration
-- CTF infrastructure support
+- Conference session notes and analysis
+- Presentation content through a Scheme lens
+- Hacker culture and community observations
+- Technical demonstrations in functional programming
+- Village activities and workshop notes
+- Security research methodologies
 
 ## Features
 
@@ -64,4 +64,4 @@ defcon33/
 
 ## License
 
-Private repository - Internal use only
+Public repository - Conference notes and educational content

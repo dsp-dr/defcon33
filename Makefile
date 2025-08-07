@@ -113,4 +113,19 @@ ctf: ## CTF infrastructure
 	@echo "$(PURPLE)CTF Infrastructure$(RESET)"
 	@$(GUILE) -L lib -L modules -c "(use-modules (ctf)) (ctf-repl)"
 
+mirror: ## Mirror DEF CON 33 presentations only
+	@echo "$(CYAN)Mirroring DEF CON 33 Presentations...$(RESET)"
+	@echo "$(YELLOW)This will download presentations to .mirror/$(RESET)"
+	@mkdir -p .mirror
+	@cd .mirror && \
+		wget -r -np -nH --cut-dirs=2 -R "index.html*" \
+		--accept "*.pdf,*.pptx,*.ppt,*.odp" \
+		"https://media.defcon.org/DEF%20CON%2033/DEF%20CON%2033%20presentations/"
+	@echo "$(GREEN)✓ Presentations mirrored to .mirror/$(RESET)"
+
+sessions: ## Show tomorrow's core sessions
+	@echo "$(PURPLE)Tomorrow's Core Sessions$(RESET)"
+	@echo "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"
+	@$(GUILE) -L modules -c "(use-modules (sessions core)) (for-each display-session (core-sessions))"
+
 .DEFAULT_GOAL := help
