@@ -1,0 +1,6 @@
+[submodule "hackertracker-info"]
+	path = hackertracker-info
+	url = https://github.com/junctor/hackertracker-info.git
+[submodule "info-export"]
+	path = info-export
+	url = https://github.com/junctor/info-export.git

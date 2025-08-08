@@ -20,9 +20,49 @@ This repository explores DEF CON 33 through Guile Scheme, documenting:
 
 ![DEF CON 33 Logo](defcon-logo.png)
 
+## Live Streaming & Resources
+
+### Current Streams (August 7-10, 2025)
+- **YouTube**: [@DEFCONConference/streams](https://www.youtube.com/@DEFCONConference/streams)
+- **DEF CON TV**: [dctv.defcon.org](https://dctv.defcon.org/)
+- **Info Node**: [info.defcon.org](https://info.defcon.org/content/?id=61973)
+
+### Check Live Streams
+```bash
+# Check for currently live DEF CON streams
+./bin/check-live-streams.sh
+```
+
+### LLM/AI Focus Sessions
+Tracking AI, machine learning, and LLM security presentations:
+
+#### Key AI/LLM Tracks & Villages
+- **AI Village**: [Track 3] - Hands-on AI security research and demonstrations
+- **Main Stage**: DARPA AI Cyber Challenge presentations
+- **Track 1**: Advanced AI exploitation and defense techniques
+- **Track 2**: LLM security and adversarial research
+- **Track 4**: Machine learning in cybersecurity applications
+
+#### Featured AI/LLM Talks
+- AI exploitation techniques and defenses
+- LLM vulnerability research and jailbreaking
+- Machine learning model poisoning
+- Adversarial AI demonstrations
+- Automated security tools using AI
+- Privacy attacks on ML models
+- AI-powered threat detection
+
+### Schedule & Tracking
+- **Hacker Tracker**: [hackertracker-info](./hackertracker-info/) - Real-time schedule
+- **Info Export**: [info-export](./info-export/) - Conference data exports
+- **Official Schedule**: [info.defcon.org](https://info.defcon.org/content/?id=61973)
+
 ## Quick Start
 
 ```bash
+# Check for live streams
+./bin/check-live-streams.sh
+
 # Download presentations from DEF CON media server
 gmake mirror
 
